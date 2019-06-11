@@ -66,13 +66,14 @@ Example Playbook
 ----------------
 
     - hosts: polycoms
+      gather_facts: no
       roles:
          - polycom-vvx-voipms-config
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
