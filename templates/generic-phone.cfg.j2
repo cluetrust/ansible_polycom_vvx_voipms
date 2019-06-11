@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Application SIP Danube1 5.4.1.18405 01-Mar-17 17:32 -->
+{{ ansible_managed | comment('xml') }}
+
+<PHONE_CONFIG>
+	<ALL
+		device.prov.serverName="{{ provisioning_server }}"
+		device.prov.serverType="{{ provisioning_server_scheme }}"
+		device.prov.user="{{ provisioning_server_username }}"
+		device.prov.password="{{ provisioning_server_password }}"
+		device.prov.serverName.set="1"
+		device.prov.tagSerialNo="1"
+		device.prov.ztpEnabled="0"
+		device.prov.ztpEnabled.set="1"
+		device.auth.localAdminPassword="082071"
+		device.auth.localAdminPassword.set="1"
+		device.sntp.gmtOffsetcityID="16"
+		device.set="1"
+		msg.mwi.1.callBack="*97"
+		msg.mwi.1.callBackMode="contact"
+
+                lcl.datetime.time.24HourClock="{{ clock24 | default(0) }}"
+
+		tcpIpApp.sntp.address="pool.ntp.org"
+		tcpIpApp.sntp.gmtOffsetcityID="16"
+		tcpIpApp.sntp.gmtOffset="{{ gmtoffset }}"
+
+{% for button in buttons %}
+{% set def_voipms_account %}{{ voipms_account }}_{{ inventory_hostname[6:12] }}{{"%02d" | format(loop.index)}}{% endset %}
+		reg.{{loop.index}}.address="{{ button.voipms_account | default(def_voipms_account) }}"
+		reg.{{loop.index}}.auth.loginCredentialType="usernameAndPassword"
+		reg.{{loop.index}}.auth.userId="{{ button.voipms_account | default(def_voipms_account) }}"
+		reg.{{loop.index}}.auth.password="{{ button.sippassword | default(sippassword) }}"
+		reg.{{loop.index}}.displayName="{{ button.displayname }}"
+		reg.{{loop.index}}.label="{{ button.label | default(button.displayname) }}"
+		reg.{{loop.index}}.serverAutoDiscovery="0"
+		reg.{{loop.index}}.srtp.enable="0"
+		voIpProt.server.{{loop.index}}.address="{{ button.voipms_server | default(voipms_server) }}"
+		voIpProt.server.{{loop.index}}.port="5060"
+		reg.{{loop.index}}.server.1.address="{{ button.voipms_server | default(voipms_server) }}"
+		reg.{{loop.index}}.server.1.expires="300"
+		reg.{{loop.index}}.server.1.port="5060"
+		reg.{{loop.index}}.server.1.subscribe.expires="300"
+		reg.{{loop.index}}.server.1.transport="UDPOnly"
+
+{% endfor %}
+		voice.handset.st="{{ sidetone | default('13') }}"
+
+	/>
+</PHONE_CONFIG>
