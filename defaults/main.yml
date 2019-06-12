@@ -1,2 +1,85 @@
 ---
 # defaults file for polycom-vvx-voipms-config
+
+########################################
+#
+# Site-wide stuff that should be set in groups_vars/all.yml or
+# group_vars/your_group.yml - but you might want to override in
+# host_vars/00005e00532a.yml for some.
+#
+# Note that the hostname in the inventory file is the MAC address of the phone.
+# The templating operation is always delegate_to the provisioning server.
+
+voipms_account: "123456"
+voipms_server: "washington1.voip.ms"
+
+# Credentials for the phone to talk to the provisioning server
+
+provisioning_server: polyanna.example.org
+provisioning_server_scheme: https
+provisioning_server_username: PlcmSpIp
+provisioning_server_password: some_password
+
+# this is the login or front panel login pin/password for the phone - set site-wide
+# or make unique per-phone for "special" people...
+phone_password: 31337
+
+# this is the number of seconds you are behind/west of (negative number) or ahead/east
+# of (positive number) UTC - set site-wide and override per-phone or do whatever.
+# Or just put God's own timezone (UTC) on all phones and show people how it's done.
+gmtoffset: "-18000"
+
+
+########################################
+#
+# These variables you likely want to set in host_vars/00005e00532a.yml
+#
+# This is the password for sip registration, assumption is that you make
+# it the same for all buttons on a phone, but variable between phones.
+sippassword: "some_password"
+
+# 1 for 24 hour clock, 0 for 12 hour clock
+clock24: 1
+
+# buttons array - minimum is just a series of labels - the defaults on
+# the back end will do the needful.  for each item in the buttons array
+# you can, however, override:
+# 
+# "label" (what it says on the button)
+# "displayname" (caller ID, not honored by voip.ms sadly)
+# "voipms_account" (account you register to)
+# "sippassword" (goes with the registration account)
+# "voipms_server" (the particular sip server you register to, need not actually be voip.ms)
+# 
+# 
+# something like this, up to the
+# maximum number of buttons your phone supports
+
+buttons:
+
+  - displayname: "7035551212"
+
+  - label: "Spoof Cell (0001)"
+    displayname: "7035550001"
+
+
+# Each button on the phone is a separate SIP registration to voip.ms.
+# They do subaccounts by concatenating account name + underscore +
+# user-defined-subaccount-name (with serious restrictions on characters).
+
+# For ClueTrust, the approved user-defined subaccount name is the last 6
+# digits of the MAC address (no colons) plus a two digit button number
+# starting at 01 (Polycom's button number index starts at 1 not 0).
+
+# So, button 1 for voip.ms account 123456 Polycom phone MAC address
+# 00:00:5e:00:53:2a would be 123456_00532a01
+
+# This role handles all that on the back end in the phone config definitions.
+
+# One last thing:  The VVX500 has crappy underpowered sidetone (hearing yourself
+# in the handset when you talk).  There's a forums-documented-only parameter
+# that lets you goose that around from a configuration file.  12 or 13
+# seem to be good numbers for this:
+
+sidetone: 13
+
