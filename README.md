@@ -1,7 +1,7 @@
 Role Name
 =========
 
-polycom-vvx-voipms-config - Makes config files for Polycom VVX phones, strongly opinionated towards voip.ms + cluetrust way of doing subaccounts
+polycom-vvx-voipms - Manage configurations and rebooting of Polycom VVX series VoIP phones, strongly opinionated towards voip.ms + cluetrust way of doing subaccounts
 
 Requirements
 ------------
@@ -21,10 +21,27 @@ None.
 Example Playbook
 ----------------
 
-    - hosts: polycoms
-      gather_facts: no
-      roles:
-         - polycom-vvx-voipms-config
+
+- hosts: [ rs_polycoms ]
+  gather_facts: no
+
+  tasks:
+    - name: generate configuration files
+      include_role:
+        name: polycom-vvx-voipms-config
+        tasks_from: config
+
+OR
+
+- hosts: [ rs_polycoms ]
+  gather_facts: no
+
+  tasks:
+    - name: reboot phone
+      include_role:
+        name: polycom-vvx-voipms-config
+        tasks_from: reboot
+
 
 License
 -------

@@ -1,10 +1,9 @@
 ---
-# tasks file for polycom-vvx-voipms-config
+# tasks/main.yml file for polycom-vvx-voipms-config
+# shouldn't get here if called properly
 
-- name: making phone config
-  template:
-    src: generic-phone.cfg.j2
-    dest: /tftpboot/{{ inventory_hostname }}-phone.cfg
-  delegate_to: "{{ provisioning_server }}"
+- name: main tasks should never get called; specify tasks_from (see import_role or include_role module)
+  fail:
+    msg: "should never reach here"
 
 ...

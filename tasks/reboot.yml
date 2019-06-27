@@ -1,0 +1,47 @@
+---
+# tasks file for polycom-vvx-reboot
+
+    - local_action:
+        module: set_fact
+        phone_login: "Polycom:{{ phone_password | default('456') }}"
+      
+
+    - name: "rebooting phone (don't panic, phones may take ~40 seconds to stop responding to pings after receiving reboot command)"
+      local_action: 
+        module: uri
+        validate_certs: no
+        url: https://{{ ansible_host }}/form-submit/Reboot
+        method: POST
+        status_code:
+          - 200
+          - 401
+        headers:
+          Authorization: "Basic {{ phone_login | b64encode }}"
+          Content-Length: "0"
+          Content-Type: "application/x-www-form-urlencoded"
+          Cookie: "Authorization=Basic {{ phone_login | default('Polycom:456') | b64encode }}"
+      register: try
+
+#    - debug: var=try
+
+    - name: "retrying reboot with default credentials if we didn't get a 200"
+      local_action:
+        module: uri
+        validate_certs: no
+        url: https://{{ ansible_host }}/form-submit/Reboot
+        method: POST
+        headers:
+          Authorization: "Basic {{ 'Polycom:456' | b64encode }}"
+          Content-Length: "0"
+          Content-Type: "application/x-www-form-urlencoded"
+          Cookie: "Authorization=Basic {{ 'Polycom:456' | b64encode }}"
+      when: try.status != 200
+      register: try2
+
+#    - debug: var=try2
+
+
+# curl -k 'https://172.30.250.221/form-submit/Reboot' -X POST -H 'Authorization: Basic UG9seWNvbTo0NTY=' -H 'Content-Length: 0' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Cookie: Authorization=Basic UG9seWNvbTo0NTY='
+
+
+...
