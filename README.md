@@ -28,7 +28,7 @@ Example Playbook
   tasks:
     - name: generate configuration files
       include_role:
-        name: polycom-vvx-voipms-config
+        name: polycom-vvx-voipms
         tasks_from: config
 ```
 
@@ -41,7 +41,7 @@ OR
   tasks:
     - name: reboot phone
       include_role:
-        name: polycom-vvx-voipms-config
+        name: polycom-vvx-voipms
         tasks_from: reboot
 ```
 
