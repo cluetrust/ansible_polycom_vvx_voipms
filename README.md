@@ -21,7 +21,7 @@ None.
 Example Playbook
 ----------------
 
-
+```yaml
 - hosts: [ rs_polycoms ]
   gather_facts: no
 
@@ -30,9 +30,11 @@ Example Playbook
       include_role:
         name: polycom-vvx-voipms-config
         tasks_from: config
+```
 
 OR
 
+```yaml
 - hosts: [ rs_polycoms ]
   gather_facts: no
 
@@ -41,7 +43,7 @@ OR
       include_role:
         name: polycom-vvx-voipms-config
         tasks_from: reboot
-
+```
 
 License
 -------
