@@ -25,6 +25,9 @@
 		tcpIpApp.sntp.address="pool.ntp.org"
 		tcpIpApp.sntp.gmtOffsetcityID="16"
 		tcpIpApp.sntp.gmtOffset="{{ gmtoffset }}"
+		voIpProt.SIP.local.port="{{ voipms_sip_local_port | default(omit) }}"
+		voIpProt.local.port="{{ voipms_local_port | default(omit) }}"
+
 
 {% for button in buttons %}
 {% set def_voipms_account %}{{ voipms_account }}_{{ inventory_hostname[6:12] }}{{"%02d" | format(loop.index)}}{% endset %}
@@ -37,11 +40,11 @@
 		reg.{{loop.index}}.serverAutoDiscovery="0"
 		reg.{{loop.index}}.srtp.enable="0"
 		voIpProt.server.{{loop.index}}.address="{{ button.voipms_server | default(voipms_server) }}"
-		voIpProt.server.{{loop.index}}.port="5060"
+		voIpProt.server.{{loop.index}}.port="{{ button.voipms_sipport | default(5060) }}"
 		reg.{{loop.index}}.server.1.address="{{ button.voipms_server | default(voipms_server) }}"
-		reg.{{loop.index}}.server.1.expires="300"
-		reg.{{loop.index}}.server.1.port="5060"
-		reg.{{loop.index}}.server.1.subscribe.expires="300"
+		reg.{{loop.index}}.server.1.expires="{{ button.voipms_expires | default(300) }}"
+		reg.{{loop.index}}.server.1.port="{{ button.voipms_sipport | default(5060) }}"
+		reg.{{loop.index}}.server.1.subscribe.expires="{{ button.voipms_expires | default(300) }}"
 		reg.{{loop.index}}.server.1.transport="UDPOnly"
 
 {% endfor %}
